@@ -6,76 +6,107 @@ gameObject = {
     questionArr : [
 
         { 
-            question : "",
-            answer : [],
+            question : "In which year did the demolition of the Berlin Wall begin?",
+            answer : {
+                wrong : [
+                    "1967",
+                    "1991",
+                    "1776"
+                ],
+                correct : "1989"
+            },
             image : "<img src='assets/images/' alt='' class='image'>"
         },
 
         { 
-            question : "",
-            answer : [],
+            question : "In which year was the death of Queen Elizabeth I?",
+            answer : {
+                wrong : [
+                    "1999",
+                    "1566",
+                    "1787"
+                ],
+                correct : "1603"
+            },
             image : "<img src='assets/images/' alt='' class='image'>"
         },
 
         { 
-            question : "",
-            answer : [],
+            question : "Who was the cult leader of the Waco Siege in 1993?",
+            answer : {
+                wrong : [],
+                correct : "David Koresh"
+            },
             image : "<img src='assets/images/' alt='' class='image'>"
         },
         
         { 
-            question : "",
-            answer : [],
+            question : "What was Michael Jackson known as?",
+            answer : {
+                wrong : [
+                    "The Prince of Pop",
+                    "The King of Music",
+                    "The King of Sing"
+                ],
+                correct : "The King of Pop"
+            },
             image : "<img src='assets/images/' alt='' class='image'>"
         },
 
         { 
-            question : "",
-            answer : [],
+            question : " Doctor Ivo “Eggman” Robotnik is the enemy of which video game character?",
+            answer : {
+                wrong : [],
+                correct : "Sonic the Hedgehog"
+            },
             image : "<img src='assets/images/' alt='' class='image'>"
         },
         
         { 
-            question : "",
-            answer : [],
+            question : "Which video game company’s franchises included Mortal Kombat, Spy Hunter and Rampage?",
+            answer : {
+                wrong : [],
+                correct : "Midway Games Inc."
+            },
             image : "<img src='assets/images/' alt='' class='image'>"
         },
 
         { 
-            question : "",
-            answer : [],
+            question : "Mario first appeared in which classic video game?",
+            answer : {
+                wrong : [],
+                correct : "Donkey Kong"
+            },
             image : "<img src='assets/images/' alt='' class='image'>"
         },
         
         { 
-            question : "",
-            answer : [],
+            question : "What is the sum of the angles of a triangle?",
+            answer : {
+                wrong : [],
+                correct : "180 degrees"
+            },
             image : "<img src='assets/images/' alt='' class='image'>"
         },
 
         { 
-            question : "",
-            answer : [],
+            question : "What is the most commonly diagnosed cancer in men?",
+            answer : {
+                wrong : [],
+                correct : "Prostate"
+            },
             image : "<img src='assets/images/' alt='' class='image'>"
         },
         
         { 
-            question : "",
-            answer : [],
+            question : "Which US city has been hit by the most tornadoes?",
+            answer : {
+                wrong : [],
+                correct : "Oklahoma City"
+            },
             image : "<img src='assets/images/' alt='' class='image'>"
         },
 
-        { 
-            question : "",
-            answer : [],
-            image : "<img src='assets/images/' alt='' class='image'>"
-        },
-        
-        { 
-            question : "",
-            answer : [],
-            image : "<img src='assets/images/' alt='' class='image'>"
-        }
     ],
 
     // gameObject variables
@@ -97,7 +128,7 @@ gameObject = {
             // displays questions correct / wrong count
             $("<div/>").attr("id", "questionCount").appendTo("#gameStatus");
 
-                $("<div/>").attr("id", "questionsRight").appendTo("#questionCount");
+                $("<div/>").attr("id", "questionsCorrect").appendTo("#questionCount");
 
                 $("<div/>").attr("id", "questionsWrong").appendTo("#questionCount");
             
