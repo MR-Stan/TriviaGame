@@ -174,6 +174,8 @@ gameObject = {
             $("<div/>").attr("id", "buttonContainer").appendTo("main");
 
             $("<button>", {text : "Start", id : "startBtn", class : "button"}).appendTo("#buttonContainer");
+
+            $("<button>", {text : "Next Question", id : "nextBtn", class : "button"}).appendTo("#buttonContainer");
     },
 
     // CSS 
@@ -188,6 +190,7 @@ gameObject = {
         $("main").empty();
         this.createElements();
         $("#gameStatus").hide();
+        $("#nextBtn").hide();
         $("#startBtn").click(function() { 
             gameObject.start();
         });
@@ -199,15 +202,18 @@ gameObject = {
         this.timer = setInterval(function(){
             gameObject.counter--;
             $("#timer").text("Time Remaining: " + gameObject.counter + " seconds");
+            if (gameObject.counter === 0) {
+                clearInterval(gameObject.timer);
+                gameObject.timesUp();
+            }
         }, 1000);
     },
 
     start : function() {
-        this.index = Math.floor(Math.random()*(this.questionArray.length))
         $("#startBtn").hide();
         $("#introDiv").hide();
         $("#gameStatus").show();
-        this.play();
+        this.nextQuestion();
     },
 
     displayQuestion : function() {
@@ -240,12 +246,7 @@ gameObject = {
             .data("name", gameObject.questionArray[gameObject.index].answer.correct)
             .insertAfter("#btn" + randomNumber);
         }
-    },
-
-    nextQuestion : function() {
-        this.displayQuestion();
-        this.displayAnswers();
-        this.startTimer();
+        $(".answerBtn").show();
     },
 
     answerQuestion : function() {
@@ -264,50 +265,70 @@ gameObject = {
 // after answering need to display text saying right / wrong, which answer was right (if answered wrong), display image, and then call removeQuestion
 
     removeQuestion : function() {
-        console.log(this.index);
         this.questionArray.splice(this.index, 1);
         this.checkArray();
     },
 
     timesUp : function() {
         this.unanswered++;
+        // display # of questions unanswered
+        $("#question").hide();
+        //$(".answerBtn").remove();
+        // display text saying You ran out of time! The correct answer is
+        // show associated image
+        this.checkArray();
+
     },
 
     answerWrong : function() {
         this.wrong++;
-        // $(".answerBtn").hide();
+        // display # of questions wrong
+        $("#question").hide();
+        //$(".answerBtn").remove();
         // display text saying Wrong! The correct answer is ...
         // show associated image
-        // $("#nextBtn").show();
-        console.log(this.wrong);
+        this.checkArray();
     },
 
     answerRight : function() {
         this.right++;
-        // $(".answerBtn").hide();
+        // display # of questions right
+        $("#question").hide();
+        //$(".answerBtn").remove();
         // display text saying Correct!
         // show associated image
-        // $("#nextBtn").show();
-        console.log(this.right);
+        this.checkArray();
     },
 
     checkArray : function() {
-        if (this.questionArray.length === 0) {
+        $(".answerBtn").remove();
+        if (this.questionArray.length === 1) {
+            console.log("last question");
             this.endGame();
         }
         else {
-            this.next();
+            $("#nextBtn").show();
+            $("#nextBtn").click(function(e) {  
+                e.stopImmediatePropagation()
+                gameObject.removeQuestion();
+                gameObject.nextQuestion();
+            });
         }
+    },
+
+    nextQuestion : function() {
+        this.index = Math.floor(Math.random()*(this.questionArray.length))
+        $("#nextBtn").hide();
+        $("#question").show();
+        this.displayQuestion();
+        this.displayAnswers();
+        this.startTimer();
+        this.answerQuestion();
     },
 
     endGame : function() {
 
     },
-
-    play : function() {
-        this.nextQuestion();
-        this.answerQuestion();
-    }
 
 }
 
