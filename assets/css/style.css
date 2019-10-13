@@ -1,0 +1,59 @@
+html {
+    max-height: 100vh;
+}
+
+body {
+    background-color: rgb(18,23,65);
+    text-align: center;
+    font-family: 'Play', sans-serif;
+}
+
+header, main {
+    background-color: rgb(40,53,147);
+    color: white;
+}
+
+header {
+    font-size: 3em;
+    line-height: 300%;
+    border-bottom: 2px solid rgb(47,100,178);
+    text-shadow: -1px 0 rgb(47,100,178), 0 1px rgb(47,100,178), 1px 0 rgb(47,100,178), 0 -1px rgb(47,100,178);
+}
+
+main {
+    width: 80%;
+    margin: 5% auto auto auto;
+    border-radius: 25px;
+    border: 2px solid rgb(47,100,178);
+    font-size: 1.2em;
+    
+}
+
+.button, .answerBtn {
+    background-color: rgb(18,23,65);
+    border: 2px solid rgb(47,100,178);
+    color: rgb(232,198,39);
+    border-radius: 25px;
+    font-size: 1.2em;
+    padding: 1% 3% 1% 3%;
+}
+
+#buttonContainer {
+    
+}
+
+.answerBtn {
+    display: block;
+    width: 35%;
+    margin: 1% auto;
+}
+
+#questionsCorrect, #questionsWrong, #questionsUnanswered {
+    display: inline-flex;
+    margin: 1%;
+}
+
+#correct, #wrong, #unanswered {
+    margin-left: 10%;
+    color: rgb(232,198,39);
+}

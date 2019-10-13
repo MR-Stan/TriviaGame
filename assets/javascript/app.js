@@ -149,9 +149,6 @@ gameObject = {
     // ------------------------------------------------------------------------------------------------------------------------------------------------------
     createElements : function() {
 
-        // headerDiv to hold the game title
-        $("<div/>").attr("id", "headerDiv").appendTo("header");
-
         // displays initial instructions
         $("<div/>").attr("id", "introDiv").appendTo("main");
 
@@ -165,11 +162,25 @@ gameObject = {
 
                 $("<div/>").attr("id", "questionsCorrect").appendTo("#questionCount");
 
-                $("<div/>").attr("id", "questionsWrong").appendTo("#questionCount");
-            
-            $("<div/>").attr("id", "timer").appendTo("#gameStatus");
+                    $("#questionsCorrect").text("Correct: ");
 
-            $("<div/>").attr("id", "question").appendTo("#gameStatus");
+                        $("<div/>").attr("id", "correct").text("0").appendTo("#questionsCorrect");
+
+                $("<div/>").attr("id", "questionsWrong").appendTo("#questionCount");
+
+                    $("#questionsWrong").text("Wrong:");
+
+                        $("<div/>").attr("id", "wrong").text("0").appendTo("#questionsWrong");
+
+                $("<div/>").attr("id", "questionsUnanswered").appendTo("#questionCount");
+
+                    $("#questionsUnanswered").text("Unanswered: ");
+
+                        $("<div/>").attr("id", "unanswered").text("0").appendTo("#questionsUnanswered");
+            
+            $("<div/>").attr("id", "timer").appendTo("main");
+
+            $("<div/>").attr("id", "question").appendTo("main");
 
             $("<div/>").attr("id", "buttonContainer").appendTo("main");
 
@@ -178,12 +189,6 @@ gameObject = {
             $("<button>", {text : "Next Question", id : "nextBtn", class : "button"}).appendTo("#buttonContainer");
     },
 
-    // CSS 
-    // ------------------------------------------------------------------------------------------------------------------------------------------------------
-
-    // ------------------------------------------------------------------------------------------------------------------------------------------------------
-
- 
     // reset game
     // ------------------------------------------------------------------------------------------------------------------------------------------------------
     reset : function() {
@@ -197,7 +202,7 @@ gameObject = {
     },
 
     startTimer : function() {
-        this.counter = 30;
+        this.counter = 15;
         $("#timer").text("Time Remaining: " + this.counter + " seconds");
         this.timer = setInterval(function(){
             gameObject.counter--;
@@ -212,7 +217,6 @@ gameObject = {
     start : function() {
         $("#startBtn").hide();
         $("#introDiv").hide();
-        $("#gameStatus").show();
         this.nextQuestion();
     },
 
@@ -271,7 +275,7 @@ gameObject = {
 
     timesUp : function() {
         this.unanswered++;
-        // display # of questions unanswered
+        $("#unanswered").text(this.unanswered);
         $("#question").hide();
         //$(".answerBtn").remove();
         // display text saying You ran out of time! The correct answer is
@@ -282,7 +286,7 @@ gameObject = {
 
     answerWrong : function() {
         this.wrong++;
-        // display # of questions wrong
+        $("#wrong").text(this.wrong);
         $("#question").hide();
         //$(".answerBtn").remove();
         // display text saying Wrong! The correct answer is ...
@@ -292,7 +296,7 @@ gameObject = {
 
     answerRight : function() {
         this.right++;
-        // display # of questions right
+        $("#correct").text(this.right);
         $("#question").hide();
         //$(".answerBtn").remove();
         // display text saying Correct!
@@ -307,6 +311,7 @@ gameObject = {
             this.endGame();
         }
         else {
+            $("#gameStatus").show();
             $("#nextBtn").show();
             $("#nextBtn").click(function(e) {  
                 e.stopImmediatePropagation()
@@ -318,6 +323,7 @@ gameObject = {
 
     nextQuestion : function() {
         this.index = Math.floor(Math.random()*(this.questionArray.length))
+        $("#gameStatus").hide();
         $("#nextBtn").hide();
         $("#question").show();
         this.displayQuestion();
