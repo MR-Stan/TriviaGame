@@ -174,8 +174,6 @@ gameObject = {
             $("<div/>").attr("id", "buttonContainer").appendTo("main");
 
             $("<button>", {text : "Start", id : "startBtn", class : "button"}).appendTo("#buttonContainer");
-
-        // at end display total correct / wrong and total time spent
     },
 
     // CSS 
@@ -190,79 +188,126 @@ gameObject = {
         $("main").empty();
         this.createElements();
         $("#gameStatus").hide();
-
-
-        // $.each(this.questionArray, function (index) {
-
-        //     $("#characterContainer").append("<div id='character" + index + "'</div>");
-        //     $("#character" + index).addClass("character");
-        //     $("#character" + index).attr({
-        //         'data-name' : gameObject.characters[index].name,
-        //         'data-hp' : gameObject.characters[index].hp,
-        //         'data-ap' : gameObject.characters[index].ap,
-        //         'data-ca' : gameObject.characters[index].ca
-        //     });
-
-        // });
         $("#startBtn").click(function() { 
             gameObject.start();
         });
-        },
+    },
 
-        startTimer : function() {
-            this.counter = 30;
-            $("#timer").text("Time Remaining: " + this.counter + " seconds");
-            this.timer = setInterval(function(){
-                gameObject.counter--;
-                $("#timer").text("Time Remaining: " + gameObject.counter + " seconds");
-            }, 1000);
-        },
+    startTimer : function() {
+        this.counter = 30;
+        $("#timer").text("Time Remaining: " + this.counter + " seconds");
+        this.timer = setInterval(function(){
+            gameObject.counter--;
+            $("#timer").text("Time Remaining: " + gameObject.counter + " seconds");
+        }, 1000);
+    },
 
-        start : function() {
-            this.index = Math.floor(Math.random()*(this.questionArray.length))
-            $("#startBtn").hide();
-            $("#introDiv").hide();
-            $("#gameStatus").show();
-            this.displayQuestion();
-            this.displayAnswers();
-            this.startTimer();
+    start : function() {
+        this.index = Math.floor(Math.random()*(this.questionArray.length))
+        $("#startBtn").hide();
+        $("#introDiv").hide();
+        $("#gameStatus").show();
+        this.play();
+    },
 
-            // on click choose question[random index] and display various properties
+    displayQuestion : function() {
+        $("#question").text(this.questionArray[this.index].question);
+    },
 
-        },
+    displayAnswers : function() {
+        let localIndex = 0;
+        // creating buttons for wrong answers, button id's 0-2
+        for (let i = 0; i < 3; i++) {
+            $("<button>").attr({
+                id : "btn" + localIndex,
+                class : "answerBtn"
+            }).text(gameObject.questionArray[gameObject.index].answer.wrong[localIndex])
+            .data("name", gameObject.questionArray[gameObject.index].answer.wrong[localIndex])
+            .appendTo("#buttonContainer");
+            localIndex++;
+        }
+        let randomNumber = Math.floor(Math.random() * Math.floor(3));
+        // determining placement of correct answer button
+        if (randomNumber === 0) {
+            $("<button>").attr("class", "answerBtn") 
+            .text(gameObject.questionArray[gameObject.index].answer.correct) 
+            .data("name", gameObject.questionArray[gameObject.index].answer.correct)
+            .insertBefore("#btn0");
+        }
+        else {
+            $("<button>").attr("class", "answerBtn")
+            .text(gameObject.questionArray[gameObject.index].answer.correct)
+            .data("name", gameObject.questionArray[gameObject.index].answer.correct)
+            .insertAfter("#btn" + randomNumber);
+        }
+    },
 
-        displayQuestion : function() {
-            console.log(this.index);
-            $("#question").text(this.questionArray[this.index].question);
-            
-        },
+    nextQuestion : function() {
+        this.displayQuestion();
+        this.displayAnswers();
+        this.startTimer();
+    },
 
-        displayAnswers : function() {
-            for (let i = 0; i < 3; i++) {
-                
+    answerQuestion : function() {
+        $(".answerBtn").click(function() { 
+            clearInterval(gameObject.timer);
+            // checking to see if selected button matches the correct answer
+            if ($(this).data("name") === gameObject.questionArray[gameObject.index].answer.correct) {
+                gameObject.answerRight();
             }
-        },
+            else {
+                gameObject.answerWrong();
+            }
+        });
+    },
 
-        answerQuestion : function() {
-            clearInterval(this.timer);
-        },
+// after answering need to display text saying right / wrong, which answer was right (if answered wrong), display image, and then call removeQuestion
 
-        timesUp : function() {
-            this.unanswered++;
-        },
+    removeQuestion : function() {
+        console.log(this.index);
+        this.questionArray.splice(this.index, 1);
+        this.checkArray();
+    },
 
-        answerWrong : function() {
-            this.wrong++;
-        },
+    timesUp : function() {
+        this.unanswered++;
+    },
 
-        answerRight : function() {
-            this.right++;
-        },
+    answerWrong : function() {
+        this.wrong++;
+        // $(".answerBtn").hide();
+        // display text saying Wrong! The correct answer is ...
+        // show associated image
+        // $("#nextBtn").show();
+        console.log(this.wrong);
+    },
 
-        endGame : function() {
+    answerRight : function() {
+        this.right++;
+        // $(".answerBtn").hide();
+        // display text saying Correct!
+        // show associated image
+        // $("#nextBtn").show();
+        console.log(this.right);
+    },
 
-        },
+    checkArray : function() {
+        if (this.questionArray.length === 0) {
+            this.endGame();
+        }
+        else {
+            this.next();
+        }
+    },
 
+    endGame : function() {
+
+    },
+
+    play : function() {
+        this.nextQuestion();
+        this.answerQuestion();
+    }
 
 }
 
