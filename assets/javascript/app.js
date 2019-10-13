@@ -1,6 +1,6 @@
 gameObject = {
 
-    // question bank
+    // question / answer bank
     // ------------------------------------------------------------------------------------------------------------------------------------------------------
     questionArray : [
 
@@ -77,7 +77,7 @@ gameObject = {
                     "Nintendo",
                     "Sega"
                 ],
-                correct : "Midway Games Inc."
+                correct : "Midway Games Inc"
             },
             image : "<img src='assets/images/midway.jpg' alt='image of Midway Games Inc. logo' class='image'>"
         },
@@ -144,17 +144,17 @@ gameObject = {
     unanswered : 0,
     counter : 0, 
     timer : "",
+    qCount : 1,
     
-    // HTML 
+    // HTML elements
     // ------------------------------------------------------------------------------------------------------------------------------------------------------
     createElements : function() {
 
         // displays initial instructions
         $("<div/>").attr("id", "introDiv").appendTo("main");
 
-        $("#introDiv").append("Welcome to the Random Trivia Trivia Game! <br> Guess the correct answer to each question to win. <br> Press 'Start' to begin!")
+        $("#introDiv").append("Welcome to the Random Trivia Trivia Game! <br><br> Guess the correct answer to each question to win. <br><br> Press 'Start' to begin!")
 
-        // displays questionCount, timer, 
         $("<div/>").attr("id", "gameStatus").appendTo("main");
 
             // displays questions correct / wrong count
@@ -178,53 +178,67 @@ gameObject = {
 
                         $("<div/>").attr("id", "unanswered").text("0").appendTo("#questionsUnanswered");
             
-            $("<div/>").attr("id", "timer").appendTo("main");
+            $("<div/>").attr("id", "timer").css("color", "rgb(232,198,39)").appendTo("main");
 
             $("<div/>").attr("id", "question").appendTo("main");
+
+            $("<div/>").attr("id", "result").appendTo("main");
+
+                $("<div/>").attr("id", "resultText").appendTo("#result");
+
+                $("<div/>").attr("id", "resultImg").appendTo("#result");
 
             $("<div/>").attr("id", "buttonContainer").appendTo("main");
 
             $("<button>", {text : "Start", id : "startBtn", class : "button"}).appendTo("#buttonContainer");
 
-            $("<button>", {text : "Next Question", id : "nextBtn", class : "button"}).appendTo("#buttonContainer");
+            $("<button>", {text : "Play Again", id : "resetBtn", class : "button"}).appendTo("#buttonContainer");
+
+            $("<button>", {text : "Next Question", id : "nextBtn", class : "button"}).appendTo("#buttonContainer"); // need to remove
     },
 
-    // reset game
+    // starts game
     // ------------------------------------------------------------------------------------------------------------------------------------------------------
-    reset : function() {
-        $("main").empty();
+    start : function() {
         this.createElements();
-        $("#gameStatus").hide();
-        $("#nextBtn").hide();
+        $("#gameStatus, #nextBtn, #resetBtn").hide();
         $("#startBtn").click(function() { 
-            gameObject.start();
+            $("#startBtn").hide();
+            $("#introDiv").hide();
+            gameObject.nextQuestion();
         });
     },
 
+    // timer controls
+    // ------------------------------------------------------------------------------------------------------------------------------------------------------
     startTimer : function() {
-        this.counter = 15;
+        this.counter = 10; // timer starts at 10 seconds
         $("#timer").text("Time Remaining: " + this.counter + " seconds");
+        // every second the counter is decremented by 1 and displayed on the page
         this.timer = setInterval(function(){
             gameObject.counter--;
             $("#timer").text("Time Remaining: " + gameObject.counter + " seconds");
+            // the timer will stop when it reaches 0 and will change colors based on time left
             if (gameObject.counter === 0) {
                 clearInterval(gameObject.timer);
                 gameObject.timesUp();
             }
-        }, 1000);
+            else if (gameObject.counter < 4) {
+                $("#timer").css("color", "red");
+            }
+            else if (gameObject.counter < 6) {
+                $("#timer").css("color", "darkorange");
+            }
+            else if (gameObject.counter < 8) {
+                $("#timer").css("color", "orange");
+            }
+        }, 992);
     },
 
-    start : function() {
-        $("#startBtn").hide();
-        $("#introDiv").hide();
-        this.nextQuestion();
-    },
-
-    displayQuestion : function() {
-        $("#question").text(this.questionArray[this.index].question);
-    },
-
+    // determining answers corresponding to picked question, randomizing answer order, displaying answers
+    // ------------------------------------------------------------------------------------------------------------------------------------------------------
     displayAnswers : function() {
+        // localIndex used for answer button Id's
         let localIndex = 0;
         // creating buttons for wrong answers, button id's 0-2
         for (let i = 0; i < 3; i++) {
@@ -236,14 +250,16 @@ gameObject = {
             .appendTo("#buttonContainer");
             localIndex++;
         }
+        // randomNumber used to determine correct answer button location
         let randomNumber = Math.floor(Math.random() * Math.floor(3));
-        // determining placement of correct answer button
+        // if randomNumber is 0, place the correct answer button before all other answer buttons
         if (randomNumber === 0) {
             $("<button>").attr("class", "answerBtn") 
             .text(gameObject.questionArray[gameObject.index].answer.correct) 
             .data("name", gameObject.questionArray[gameObject.index].answer.correct)
             .insertBefore("#btn0");
         }
+        // if randomNumber is 1 or 2 place the correct answer button after this number button
         else {
             $("<button>").attr("class", "answerBtn")
             .text(gameObject.questionArray[gameObject.index].answer.correct)
@@ -253,8 +269,11 @@ gameObject = {
         $(".answerBtn").show();
     },
 
+    // when an answer is picked
+    // ------------------------------------------------------------------------------------------------------------------------------------------------------
     answerQuestion : function() {
         $(".answerBtn").click(function() { 
+            // stop timer
             clearInterval(gameObject.timer);
             // checking to see if selected button matches the correct answer
             if ($(this).data("name") === gameObject.questionArray[gameObject.index].answer.correct) {
@@ -266,85 +285,96 @@ gameObject = {
         });
     },
 
-// after answering need to display text saying right / wrong, which answer was right (if answered wrong), display image, and then call removeQuestion
-
+    // removes object from questionArray after a question has been answered
+    // ------------------------------------------------------------------------------------------------------------------------------------------------------
     removeQuestion : function() {
         this.questionArray.splice(this.index, 1);
         this.checkArray();
     },
 
+
+    // ------------------------------------------------------------------------------------------------------------------------------------------------------
     timesUp : function() {
         this.unanswered++;
         $("#unanswered").text(this.unanswered);
         $("#question").hide();
-        //$(".answerBtn").remove();
-        // display text saying You ran out of time! The correct answer is
-        // show associated image
+        $("#resultText").text("You ran out of time! The correct answer was " + gameObject.questionArray[gameObject.index].answer.correct + ".");
+        $("#resultImg").html(gameObject.questionArray[gameObject.index].image);
         this.checkArray();
-
     },
 
+
+    // ------------------------------------------------------------------------------------------------------------------------------------------------------
     answerWrong : function() {
         this.wrong++;
         $("#wrong").text(this.wrong);
         $("#question").hide();
-        //$(".answerBtn").remove();
-        // display text saying Wrong! The correct answer is ...
-        // show associated image
+        $("#resultText").text("Wrong! The correct answer was " + gameObject.questionArray[gameObject.index].answer.correct + ".");
+        $("#resultImg").html(gameObject.questionArray[gameObject.index].image);
         this.checkArray();
     },
 
+
+    // ------------------------------------------------------------------------------------------------------------------------------------------------------
     answerRight : function() {
         this.right++;
         $("#correct").text(this.right);
         $("#question").hide();
-        //$(".answerBtn").remove();
-        // display text saying Correct!
-        // show associated image
+        $("#resultText").text("Nice job! " + gameObject.questionArray[gameObject.index].answer.correct + " was the right answer!");
+        $("#resultImg").html(gameObject.questionArray[gameObject.index].image);
         this.checkArray();
     },
 
+
+    // ------------------------------------------------------------------------------------------------------------------------------------------------------
     checkArray : function() {
+        this.qCount++;
         $(".answerBtn").remove();
-        if (this.questionArray.length === 1) {
-            console.log("last question");
-            this.endGame();
-        }
-        else {
-            $("#gameStatus").show();
-            $("#nextBtn").show();
-            $("#nextBtn").click(function(e) {  
-                e.stopImmediatePropagation()
-                gameObject.removeQuestion();
-                gameObject.nextQuestion();
-            });
-        }
+        $("#gameStatus").show();
+        $("#nextBtn").show(); // need to replace with timeout
+        $("#nextBtn").click(function(e) {  
+            if (gameObject.qCount === 20) {
+                gameObject.endGame();
+            }
+            else {
+            e.stopImmediatePropagation()
+            gameObject.removeQuestion();
+            gameObject.nextQuestion();
+            }
+        });
     },
 
+    // if more questions are available, determine and display next question
+    // ------------------------------------------------------------------------------------------------------------------------------------------------------
     nextQuestion : function() {
+        // determining index of next object in questionArray
         this.index = Math.floor(Math.random()*(this.questionArray.length))
-        $("#gameStatus").hide();
-        $("#nextBtn").hide();
-        $("#question").show();
-        this.displayQuestion();
+        // resetting timer color
+        $("#timer").css("color", "rgb(232,198,39)")
+        // emptying divs related to previous answer
+        $("#resultText, #resultImg").empty();
+        $("#gameStatus, #nextBtn").hide();
+        // showing the next question
+        $("#question").text(this.questionArray[this.index].question).show();
         this.displayAnswers();
         this.startTimer();
         this.answerQuestion();
     },
 
+    // after all questions have been answered
+    // ------------------------------------------------------------------------------------------------------------------------------------------------------
     endGame : function() {
-
+        $("#nextBtn").remove();
+        $("#timer, #resultText, #resultImg").hide();
+        $("#introDiv").text("Here's how you did: ")
+        $("#questionsCorrect, #questionsWrong, #questionsUnanswered").css("display", "block");
+        $("#correct, #wrong, #unanswered").css("margin", "0");
+        $("#gameStatus, #introDiv, #resetBtn").show();
+        $("#resetBtn").click(function(e) {  
+            e.stopImmediatePropagation();
+            window.location.reload();
+        });    
     },
-
 }
 
-
-
-    // reset timer
-    // ------------------------------------------------------------------------------------------------------------------------------------------------------
-    // on button click reset timer to 30 seconds
-    
-    // checkAnswer(answer) - not sure how to do this
-    // ------------------------------------------------------------------------------------------------------------------------------------------------------
-
-gameObject.reset();
+gameObject.start();

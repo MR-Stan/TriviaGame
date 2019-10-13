@@ -26,7 +26,10 @@ main {
     border-radius: 25px;
     border: 2px solid rgb(47,100,178);
     font-size: 1.2em;
-    
+}
+
+#introDiv {
+    margin-top: 1%;
 }
 
 .button, .answerBtn {
@@ -39,21 +42,32 @@ main {
 }
 
 #buttonContainer {
-    
+    margin: 2% auto;   
 }
 
 .answerBtn {
     display: block;
-    width: 35%;
+    width: 50%;
     margin: 1% auto;
 }
 
 #questionsCorrect, #questionsWrong, #questionsUnanswered {
     display: inline-flex;
-    margin: 1%;
+    margin: 1% 1% 0 1%;
 }
 
 #correct, #wrong, #unanswered {
     margin-left: 10%;
     color: rgb(232,198,39);
+}
+
+.image {
+    border: 1px solid white;
+    width: 350px;
+    height: 275px;
+    margin: 1.5%;
+}
+
+#timer {
+    margin: 2% auto;
 }
